@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express")
+import { gql } from "apollo-server-express"
 
 const type_Avances = gql `
 
@@ -12,7 +12,7 @@ const type_Avances = gql `
     }
 
     type Query{
-        listarAvances:[Avance]
+        listarAvances(Avances_Lider: String):[Avance]
         buscarAvance(_id: ID!): Avance
         fitrarAvances(
             Proyecto_Id: String
@@ -44,4 +44,4 @@ const type_Avances = gql `
 
 `
 
-module.exports = { type_Avances }
+export default type_Avances
