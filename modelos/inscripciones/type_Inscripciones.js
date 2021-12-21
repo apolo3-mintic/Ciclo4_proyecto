@@ -1,6 +1,6 @@
-const { gql } = require("apollo-server-express")
+import { gql } from "apollo-server-express"
 
-const type_Inscripciones = gql `
+const type_Inscripciones = gql`
 
 
     type Inscripcion{
@@ -13,7 +13,7 @@ const type_Inscripciones = gql `
     }
 
     type Query{
-        listarInscripciones: [Inscripcion]
+        listarInscripciones(Inscripciones_Lider: String): [Inscripcion]
         listarPorIdProyecto(Proyecto_Id: String!):[Inscripcion]
         buscarInscripcion(_id: ID!): Inscripcion
     }
@@ -36,14 +36,19 @@ const type_Inscripciones = gql `
 
         modificarEstadoInscripcion(
             _id: ID!
+            Estado: enum_EstadoInscripcion!
+        ): Inscripcion
+
+        aceptarInscripcion(
+            _id: ID!
+            Estado: enum_EstadoInscripcion!
         ): Inscripcion
     }
 
 
 `
 
-module.exports = { type_Inscripciones }
-
+export default type_Inscripciones
 /*
 aceptarInscripcion(_id: ID!): Inscripcion
 */

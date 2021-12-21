@@ -1,13 +1,14 @@
-const { Autenticacion_Autorizacion } = require("../auth/type_auth")
-const { modeloUsuarios } = require("./Usuarios")
+import { Autenticacion_Autorizacion } from "../auth/type_Auth.js"
+import modeloUsuarios from "./Usuarios.js"
+
 
 const resolvers_Usuarios = {
     Query: {
         listarUsuarios: async (parent, arg, context) => {
-            Autenticacion_Autorizacion(context, ["LIDER", "ADMINISTRADOR"])
+            //Autenticacion_Autorizacion(context, ["LIDER", "ADMINISTRADOR"])
 
             const filtroRol = arg.filtroRol && { Rol: { $eq: `${arg.filtroRol}` } }
-            const listaUsuarios = await modeloUsuarios.find({...filtroRol})
+            const listaUsuarios = await modeloUsuarios.find({ ...filtroRol })
                 .populate("Proyectos_Liderados")
                 .populate({ path: "Inscripciones", populate: "Proyecto_Id" })
                 .populate({ path: "Avances_Estudiantes", populate: "Proyecto_Id" })
@@ -84,26 +85,18 @@ const resolvers_Usuarios = {
         cambiarEstadoUsuario: async (parent, arg, context) => {
 
             Autenticacion_Autorizacion(context, ["ADMINISTRADOR", "LIDER"])
-            if (context.dataUsuario.Rol === "ADMINISTRADOR") {
-                const edicionEstadoUsuario = await modeloUsuarios.findByIdAndUpdate({ _id: arg._id }, {
-                    Estado: arg.EstadoPorAdmin
-                }, { new: true })
-                return edicionEstadoUsuario
-            } else{
-                const edicionEstadoUsuario = await modeloUsuarios.findByIdAndUpdate({ _id: arg._id }, {
-                    Estado: arg.EstadoPorLider
-                }, { new: true })
-                return edicionEstadoUsuario
-            }
-
+            const edicionEstadoUsuario = await modeloUsuarios.findByIdAndUpdate({ _id: arg._id }, {
+                Estado: arg.Estado
+            }, { new: true })
+            return edicionEstadoUsuario
 
         }
 
     }
 }
 
-module.exports = { resolvers_Usuarios }
-    /*
+export default resolvers_Usuarios
+/*
 else if (Object.keys(arg).includes("Identificacion")) {
 const buscarUsuario = await modeloUsuarios.findOne({ Identificacion: arg.Identificacion })
 .populate("Proyectos_Liderados")

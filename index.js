@@ -1,15 +1,16 @@
-const express = require("express")
-const cors = require("cors")
-const { ApolloServer } = require("apollo-server-express")
-const { conexionBD } = require("./basedatos.config/basedatos")
-const { Types } = require("./graphql/typeDefs")
-const { Resolvers } = require("./graphql/resolvers")
-const { ValidarToken } = require("./modelos/auth/Auth")
+import express from "express"
+import cors from "cors"
+import { ApolloServer } from "apollo-server-express"
+import conexionBD from "./basedatos.config/basedatos.js"
+import Types from "./graphql/typeDefs.js"
+import Resolvers from "./graphql/resolvers.js"
+import { ValidarToken } from "./modelos/auth/Auth.js"
+import dotenv from 'dotenv';
 
-require("dotenv").config()
+dotenv.config()
 
 const app = express()
-const puerto = process.env.PORT || 4444
+const puerto = process.env.PORT || 4000
 
 app.use(cors())
 app.use(express.json())
@@ -17,7 +18,7 @@ app.use(express.json())
 const servidor = new ApolloServer({
     typeDefs: Types,
     resolvers: Resolvers,
-    context: ({ req }) => {
+    context: ({ req, res }) => {
         const token = req.headers?.authorization ?? null
         if (token) {
             const dataUsuario = ValidarToken(token)
@@ -25,11 +26,20 @@ const servidor = new ApolloServer({
                 return { dataUsuario: dataUsuario }
             }
         }
-        return {Error: "Su sesion expiró o no ha ingresado correctamente"}
-    }
+        return { Error: "Su sesion expiró o no ha ingresado correctamente" }
+    },
+
 })
 
-app.listen(puerto, async () => {
+/* app.use((req, res, next) => {
+    if (!req.headers.authorization) {
+        res.send(new ApolloError("problemas asquis"))
+    } else {
+        next()
+    }
+}) */
+
+app.listen( puerto , async () => {
     conexionBD()
         .then(() => servidor.start())
         .then(() => servidor.applyMiddleware({ app }))

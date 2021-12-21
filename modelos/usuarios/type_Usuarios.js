@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express");
+import { gql } from "apollo-server-express"
 
 const type_Usuarios = gql `
 
@@ -61,11 +61,10 @@ const type_Usuarios = gql `
 
         cambiarEstadoUsuario(
             _id: ID!
-            EstadoPorAdmin: enum_EstadoRegistro
-            EstadoPorLider: enum_EstadoRegistroLider
+            Estado: enum_EstadoRegistro!
         ): Usuario
     }
 
 `
 
-module.exports = { type_Usuarios }
+export default type_Usuarios

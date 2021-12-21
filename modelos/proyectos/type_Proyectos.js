@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express");
+import { gql } from "apollo-server-express"
 
 const type_Proyectos = gql`
 
@@ -19,7 +19,7 @@ const type_Proyectos = gql`
     }
 
     type Query{
-        listarProyectos:[Proyecto]
+        listarProyectos(filtro: String):[Proyecto]
         buscarProyecto(_id: ID!): Proyecto
         buscarProyectosPorLider(
             Lider_Id: String!
@@ -51,7 +51,7 @@ const type_Proyectos = gql`
         cambiarEstadoProyecto(
             _id: ID!
             Estado: enum_EstadoProyecto!
-            Fase: enum_FaseProyecto
+            Fase: enum_FaseProyecto!
         ): Proyecto
 
         cambiarFaseProyecto(
@@ -62,8 +62,7 @@ const type_Proyectos = gql`
 
 `
 
-module.exports = { type_Proyectos }
-
+export default type_Proyectos
 /* type Objetivo_Especifico {
     _id: ID!
     Descripcion: String!
